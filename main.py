@@ -32,6 +32,21 @@ def main():
         quantization_config=quantization_config
     )
 
+    tokenizer = AutoTokenizer.from_pretrained(model_id)
+    
+    # Criando o pipeline de geração de texto
+    pipe = pipeline("text-generation", model=model, tokenizer=tokenizer)
+    generations_args = {
+      "max_new_tokens": 500,
+      "return_full_text": False,
+      "temperature": 0.9,  # Varia de 0.1 até 0.9
+      "do_sample": True
+    }
+
+    prompt = "Quem foi a primeira pessoa no espaço?"
+
+    output = pipe(prompt, **generations_args)
+    print(output[0]['generated_text'])
 
 if __name__ == "__main__":
     main()
