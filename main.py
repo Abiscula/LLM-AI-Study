@@ -44,8 +44,14 @@ def main():
     }
 
     prompt = "Quem foi a primeira pessoa no espaço?"
+    
+    template = """<|system|>
+    You are a helpful assistant.<|end|>
+    <|user|>
+    "{}"<|end|>
+    <|assistant|>""".format(prompt)
 
-    output = pipe(prompt, **generations_args)
+    output = pipe(template, **generations_args)
     print(output[0]['generated_text'])
 
 if __name__ == "__main__":
