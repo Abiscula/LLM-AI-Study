@@ -39,17 +39,18 @@ def main():
     generations_args = {
       "max_new_tokens": 500,
       "return_full_text": False,
-      "temperature": 0.9,  # Varia de 0.1 até 0.9
+      "temperature": 0.1,  # Varia de 0.1 até 0.9
       "do_sample": True
     }
 
     prompt = "Quem foi a primeira pessoa no espaço?"
-    
+    sys_prompt = "Você é um professor de história. Responda a pergunta em português."
+
     template = """<|system|>
-    You are a helpful assistant.<|end|>
+    {}<|end|>
     <|user|>
     "{}"<|end|>
-    <|assistant|>""".format(prompt)
+    <|assistant|>""".format(sys_prompt, prompt)
 
     output = pipe(template, **generations_args)
     print(output[0]['generated_text'])
