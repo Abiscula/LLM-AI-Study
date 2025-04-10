@@ -1,6 +1,7 @@
 from transformers import AutoModelForCausalLM, AutoTokenizer, pipeline, BitsAndBytesConfig
 import torch
 from config import load_config
+from utils.quantization import quantization
 
 # Criação do template/prompt do usuário
 def user_prompt():
@@ -15,7 +16,7 @@ def user_prompt():
 
   return template
 
-def load_model():
+def load_simple_model():
   # Verifica se tem GPU disponível - se não, usa CPU
   device = "cuda:0" if torch.cuda.is_available() else "cpu"
 
@@ -28,12 +29,7 @@ def load_model():
   if device == 'cpu' or not hf_token:
     pass
       
-  quantization_config = BitsAndBytesConfig(
-    load_in_4bit=True,
-    bnb_4bit_quant_type="nf4",
-    bnb_4bit_use_double_quant=True,
-    bnb_4bit_compute_dtype=torch.bfloat16
-  )
+  quantization_config = quantization()
 
   model_id = 'microsoft/Phi-3-mini-4k-instruct'
 
