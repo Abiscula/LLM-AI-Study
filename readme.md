@@ -1,4 +1,4 @@
-# 📚 [ESTUDO] Projeto - Geração de Texto com Modelos de Linguagem Quantizados
+# 📚 [ESTUDO] Geração de Texto com Modelos de Linguagem Quantizados
 
 Este é um projetinho de estudo com foco em aprendizado prático sobre **Modelos de Linguagem (LLMs)**, **uso da GPU**, **quantização 4-bit**, e boas práticas na construção de pipelines com a biblioteca `transformers` da Hugging Face.
 
