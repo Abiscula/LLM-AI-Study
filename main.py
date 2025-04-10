@@ -1,4 +1,5 @@
 from simple_model import load_simple_model
+from lang_chain import load_lang_chain
 import torch
 
 if __name__ == "__main__":
@@ -9,4 +10,5 @@ if __name__ == "__main__":
   if device == 'cpu':
     pass
 
-  load_simple_model()
+  # load_simple_model()
+  load_lang_chain()
