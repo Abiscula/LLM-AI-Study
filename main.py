@@ -2,6 +2,18 @@ from transformers import AutoModelForCausalLM, AutoTokenizer, pipeline, BitsAndB
 import torch
 from config import load_config
 
+# Criação do template/prompt do usuário
+def user_prompt():
+  prompt = "Quem foi a primeira pessoa no espaço?"
+  sys_prompt = "Você é um professor de história. Responda a pergunta em português."
+
+  template = """<|system|>
+  {}<|end|>
+  <|user|>
+  "{}"<|end|>
+  <|assistant|>""".format(sys_prompt, prompt)
+
+  return template
 
 def main():
     # Verifica se tem GPU disponível - se não, usa CPU
@@ -13,6 +25,9 @@ def main():
     config = load_config()
     hf_token = config['HF_TOKEN']
 
+    if device == 'cpu' or not hf_token:
+      pass
+       
     quantization_config = BitsAndBytesConfig(
       load_in_4bit=True,
       bnb_4bit_quant_type="nf4",
@@ -43,14 +58,7 @@ def main():
       "do_sample": True
     }
 
-    prompt = "Quem foi a primeira pessoa no espaço?"
-    sys_prompt = "Você é um professor de história. Responda a pergunta em português."
-
-    template = """<|system|>
-    {}<|end|>
-    <|user|>
-    "{}"<|end|>
-    <|assistant|>""".format(sys_prompt, prompt)
+    template = user_prompt()
 
     output = pipe(template, **generations_args)
     print(output[0]['generated_text'])
