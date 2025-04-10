@@ -17,16 +17,13 @@ def user_prompt():
   return template
 
 def load_simple_model():
-  # Verifica se tem GPU disponível - se não, usa CPU
-  device = "cuda:0" if torch.cuda.is_available() else "cpu"
-
   # Garantindo a reprodutibilidade entre diversas execuções
   torch.random.manual_seed(40)
 
   config = load_config()
   hf_token = config['HF_TOKEN']
 
-  if device == 'cpu' or not hf_token:
+  if not hf_token:
     pass
       
   quantization_config = quantization()
