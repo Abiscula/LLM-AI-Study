@@ -22,5 +22,4 @@ def load_lang_chain():
   pipe = create_pipeline()
 
   llm = HuggingFacePipeline(pipeline = pipe)
-  print(llm)
   print(user_prompt(llm))
