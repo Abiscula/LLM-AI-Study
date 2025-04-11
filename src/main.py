@@ -12,8 +12,8 @@ def main():
       pass
 
   # load_simple_model()
-  # load_lang_chain()
-  load_chat_model()
+  load_lang_chain()
+  # load_chat_model()
 
 if __name__ == "__main__":
   main()
