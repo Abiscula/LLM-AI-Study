@@ -3,6 +3,7 @@ from langchain_huggingface import (
 )
 from langchain_core.prompts import PromptTemplate
 from langchain_core.output_parsers import StrOutputParser
+from langchain_core.runnables import RunnableLambda
 
 from src.config import create_pipeline
 
@@ -31,16 +32,22 @@ def str_output_parser(chain):
   chain_str = chain | StrOutputParser()
   return chain_str
 
+# Runnable adiciona funções em tempo de execução
+def runnable_count(parsed_chain):
+  count = RunnableLambda(lambda x: f"Palavras: {len(x.split())}\n{x}")
+  chain_with_function = parsed_chain | count
+  return chain_with_function
+
 def load_lang_chain():
   pipe = create_pipeline()
   llm = HuggingFacePipeline(pipeline = pipe)
   template = user_template()
 
   chain = chain_flow(llm, template)
-
   parsed_chain = str_output_parser(chain)
+  chain_with_function = runnable_count(parsed_chain)
 
-  response = parsed_chain.invoke({"topic": "IA", "length": "1 frase"})
+  response = chain_with_function.invoke({"topic": "IA", "length": "1 frase"})
   print(response)
 
 
