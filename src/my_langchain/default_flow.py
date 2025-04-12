@@ -38,6 +38,11 @@ def runnable_count(parsed_chain):
   chain_with_function = parsed_chain | count
   return chain_with_function
 
+# Retorna o feedback visual do texto sendo gerado em tempo real
+def streaming(chain):
+  for chunk in chain.stream({"topic": "IA", "length": "1 parágrafo"}):
+    print(chunk, end='', flush=True)
+
 def load_lang_chain():
   pipe = create_pipeline()
   llm = HuggingFacePipeline(pipeline = pipe)
@@ -45,10 +50,9 @@ def load_lang_chain():
 
   chain = chain_flow(llm, template)
   parsed_chain = str_output_parser(chain)
-  chain_with_function = runnable_count(parsed_chain)
+  # chain_with_function = runnable_count(parsed_chain)
 
-  response = chain_with_function.invoke({"topic": "IA", "length": "1 frase"})
-  print(response)
+  streaming(parsed_chain)
 
 
   
