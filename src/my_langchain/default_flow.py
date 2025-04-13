@@ -4,6 +4,7 @@ from langchain_huggingface import (
 from langchain_core.prompts import PromptTemplate
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.runnables import RunnableLambda
+from datetime import date
 
 from src.config import create_pipeline
 
@@ -16,21 +17,47 @@ def user_template():
 
   return template
 
+def RAG_template():
+  template = """<|system|>
+  {system}<|end|>
+  <|user|>
+  "
+  Question: {question}
+  Context: {context}
+  "<|end|>
+  <|assistant|>"""
+  return template
+
 # Fluxo de criação de uma chain
-def chain_flow(llm, template):
+def chain_flow(llm):
+  template = user_template()
   user_prompt = "Explique brevemente o conceito de {topic} de forma clara e objetiva." \
   "Escreva no máximo {length}"
   sys_prompt = "Você é um assistente e está respondendo perguntas."
 
   prompt = PromptTemplate.from_template(template.format(sys_prompt, user_prompt))
-  chain = prompt | llm
+  chain = prompt | llm | StrOutputParser()
 
   return chain
 
-# converte a resposta para string
-def str_output_parser(chain):
-  chain_str = chain | StrOutputParser()
-  return chain_str
+def chain_with_RAG(llm):
+  template = RAG_template()
+  today = date.today()
+
+  question = "Que dia é hoje? Retorne a data em formato dd/mm/yyyy"
+  context = f"Você sabe que hoje é dia '{today}'"
+  system = "Você é um assistente e está respondendo perguntas."
+  
+  prompt = PromptTemplate.from_template(template)
+  chain = prompt | llm | StrOutputParser()
+
+  res = chain.invoke({
+    "system": system,
+    "question": question,
+    "context": context
+  })
+
+  print(res)
 
 # Runnable adiciona funções em tempo de execução
 def runnable_count(parsed_chain):
@@ -46,13 +73,10 @@ def streaming(chain):
 def load_lang_chain():
   pipe = create_pipeline()
   llm = HuggingFacePipeline(pipeline = pipe)
-  template = user_template()
 
-  chain = chain_flow(llm, template)
-  parsed_chain = str_output_parser(chain)
-  # chain_with_function = runnable_count(parsed_chain)
+  # chain = chain_flow(llm)
+  # streaming(chain)
 
-  streaming(parsed_chain)
-
+  chain_with_RAG(llm)
 
   
