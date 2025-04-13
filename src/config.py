@@ -11,13 +11,17 @@ load_dotenv()
 def load_config():
   hf_token = os.getenv('HF_TOKEN')  # Carrega o token da Hugging Face da variável de ambiente
   lang_chain_token = os.getenv('LANG_CHAIN_API_KEY') # Carrega o token smith_langchain
+  tavily_token = os.getenv('TAVILY_API_KEY')
   if not hf_token:
     raise ValueError("HF_TOKEN não encontrado nas variáveis de ambiente.")
   if not lang_chain_token:
     raise ValueError("LANG_CHAIN_API_KEY não encontrada nas variáveis de ambiente.")
+  if not tavily_token:
+    raise ValueError("TAVILY_API_KEY não encontrada nas variáveis de ambiente.")
   return {
     'HF_TOKEN': hf_token,
-    'LANG_CHAIN_API_KEY': lang_chain_token
+    'LANG_CHAIN_API_KEY': lang_chain_token,
+    'TAVILY_API_KEY': tavily_token
   }
 
 def create_ai_model():
