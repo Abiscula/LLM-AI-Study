@@ -1,11 +1,14 @@
+import os
+
 from langchain_huggingface import (
   HuggingFacePipeline
 )
 from langchain_core.tools import Tool
 from langchain_community.tools import WikipediaQueryRun
 from langchain_community.utilities import WikipediaAPIWrapper
+from langchain import hub
 
-from src.config import create_pipeline
+from src.config import create_pipeline, load_config
 
 
 # Busca dados direto da wikipedia
@@ -35,6 +38,13 @@ def date_tool():
   date = Tool(name="Day", func=current_day,
               description="Use when you need to know the current date")
   return date
+
+def ReAct():
+  config = load_config()
+  hf_token = config['LANG_CHAIN_API_KEY']
+  os.environ["LANGCHAIN_API_KEY"] = hf_token
+
+  prompt = hub.pull("hwchase17/react")
 
 def load_agent():
   pipe = create_pipeline()
