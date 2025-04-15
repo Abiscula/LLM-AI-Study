@@ -1,5 +1,7 @@
 import os
 import io
+from rich.console import Console
+from rich.markdown import Markdown
 
 from langchain_huggingface import HuggingFaceEndpoint
 from langchain_community.document_loaders import YoutubeLoader
@@ -18,7 +20,7 @@ def get_llama_llm():
   llm = HuggingFaceEndpoint(
     repo_id="meta-llama/Meta-Llama-3-8B-Instruct", 
     temperature=0.1,
-    task="text-generation"
+    task="text-generation",
   )
   return llm
 
@@ -37,6 +39,11 @@ def write_video_transcription(infos):
   with io.open("transcricao.txt", "w", encoding="utf-8") as f:
     for doc in infos:
       f.write(doc.page_content + "\n\n")
+
+def print_video_md(content):
+  md = Markdown(f"### Informações do Vídeo\n\n**Tópicos:**\n\n{content}")
+  console = Console()
+  console.print(md)
 
 def create_prompt():
   system_prompt = "Você é um assistente virtual prestativo e deve responder a uma" \
@@ -63,6 +70,6 @@ def load_video_transcript():
   chain = create_chain(prompt, llm)
   response = chain.invoke({
     "transcricao": infos[0].page_content,
-    "consulta": "liste os temas desse video"
+    "consulta": "Resuma em uma frase"
   })
-  print(response)
+  print_video_md(response)
